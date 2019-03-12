@@ -5,45 +5,42 @@
 
     <meta charset="UTF-8">
     <title>Twitch Stories</title>
-   
+
 </head>
 
 <body>
 
-    <div class="form-group">
-
-        <textarea class="form-control" id="add-to-do" value="Add Item" rows="3"></textarea>
-        <button type="submit" id="submit" class="btn btn-primary mb-2">Submit</button>
-    </div>
+ 
 
     <div id="entriesHere">
+<p>text suppose to load here :/</p>
 
-        
     </div>
 
-    <button id="btnPublish">Publish</button>
+ 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 
-   
+
 
     <script type="text/javascript">
-    $("#publish").load("userstories2.html");
-//select: new story
-  //select:open/close
-  //max words per entry
-  //voting time period
-  //user rating
-  //more upvotes higher user is rated.
-//Heroku (help)
+        $("#entriesHere").load("userstories2.html #publish", function () {
+            alert("Load was performed.");
+        });
+        $('#entriesHere').click(function() {
+    $.get("userstories2.html #publish", function(data) {   
+       $("#entriesHere'").append(data);
+    });
+    return false;
+});
 
 
-            //$("#publish").append($(".wordz"));
 
         
+
     </script>
 
-</script>
+    </script>
 
 </body>
 

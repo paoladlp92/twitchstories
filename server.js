@@ -1,55 +1,87 @@
-// Dependencies
 var express = require("express");
-var exphbs = require("express-handlebars");
-// Create an instance of the express app.
+var logger = require("morgan");
+var mongoose = require("mongoose");
+var bodyParser = require('body-parser');
+var mongojs = require("mongojs");
+
+var PORT = 3000;
+
+//which app is this anyways?
+
+// Requiring the `User` model for accessing the `users` collection
+var Entry = require("./userModel.js");
+
+// Initialize Express
 var app = express();
-// Set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var PORT = process.env.PORT || 8080;
-// Set Handlebars as the default templating engine.
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+var databaseUrl = "userdb";
+var collections = ["entries"];
+var db = mongojs(databaseUrl, collections);
 
-var mysql = require("mysql");
+// Configure middleware
 
-var connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "byzorcabr9",
-    database: "movie_planner_db"
-  });
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static("public"));
 
-  connection.connect(function(err) {
-    if (err) {
-      console.error("error connecting: " + err.stack);
-      return;
-    }
-  
-    console.log("connected as id " + connection.threadId);
-  });
-
-// Data
-var entries = [
-  { story: "Once upon a time" },
-  { story: "There was a magical dog." } //name
-];
-
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/userdb", { useNewUrlParser: true });
+var jsonParser = bodyParser.json();
+app.use(jsonParser);
 // Routes
-app.get("/entries/:story", function(req, res) {
-  for (var i = 0; i < entries.length; i++) {
-    if (entries[i].story === req.params.story) {
-      return res.render("entries", entries[i]);
+app.get("/", function(req, res) {
+  // Create a new user using req.body
+  console.log(dbUser);
+});
+
+// Route to post our form submission to mongoDB via mongoose
+
+app.post("/submit", function(req, res) {
+  // Create a new user using req.body
+  console.log(req.body)
+  Entry.create(req.body)
+  //se puede llamar como sea, lo q se llamo en base de datos
+    .then(function(dbEntry) {
+      //displayt
+      //res.json(dbEntry)
+      console.log("all good" + dbEntry);
+      location.reload();
+    })
+    .catch(function(err) {
+      // If an error occurs, send the error to the client
+      res.json(err);
+    });
+});
+
+app.get("/submit2", function (req, res) {
+  // Query: In our database, go to the animals collection, then "find" everything
+  db.entries.find({}, function (err, found) {
+    // Log any errors if the server encounters one
+    if (err) {
+      console.log(err);
     }
-  }
+    // Otherwise, send the result of this query to the browser
+    else {
+      res.json(found.map(entries => {
+        return { id: entries._id, entry: entries.entry };
+      }));
+      //location.reload();
+    }
+  });
 });
 
 app.get("/entries", function(req, res) {
-  res.render("ics", { ics: entries });
-});
+  Entry.find({}, function(err, entries) {
+    if(err) throw err;
+    console.log("getting entries");
+    res.json(entries);
+  });
+})
 
-// Start our server so that it can begin listening to client requests.
+// Start the server
 app.listen(PORT, function() {
-  // Log (server-side) when our server has started
-  console.log("Server listening on: http://localhost:" + PORT);
+  console.log("App running on port " + PORT + "!");
 });

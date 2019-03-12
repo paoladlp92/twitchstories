@@ -12,55 +12,53 @@
 </head>
 
 <body>
-    
 
-<div class= "container">
-       
+
+    <div class="container">
+
         <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item"><a href="read.html">Read</a></li>
-                  <li class="breadcrumb-item"><a href="userstoriesabout.html">About</a></li>
-                  <li class="breadcrumb-item active" aria-current="page"></li>
-                </ol>
-              </nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="read.html">Read</a></li>
+                <li class="breadcrumb-item"><a href="userstoriesabout.html">About</a></li>
+                <li class="breadcrumb-item active" aria-current="page"></li>
+            </ol>
+        </nav>
 
- <div class="row justify-content-center, title">
-        <div class="row col-lg-12 d-flex justify-content-center, titletext">
-            
-            <h1>The Internet Wins me a Nobel Prize in Literature</h1><br>
-            <h2 class= "notby">Not Written by: Paola de la Peña</h2> <br>
-           
-        </div> 
-        <div class="row col-lg-12 d-flex justify-content-start, starttext" >
+        <div class="row justify-content-center, title">
+            <div class="row col-lg-12 d-flex justify-content-center, titletext">
+
+                <h1>The Internet Wins me a Nobel Prize in Literature</h1><br>
+                <h2 class="notby">Not Written by: Paola de la Peña</h2> <br>
+
+            </div>
+            <div class="row col-lg-12 d-flex justify-content-start, starttext">
                 <p>Start/continue writting my story, then click publish!</p>
-         </div>     
-      
+            </div>
 
-    </div>          
+
+        </div>
 
         <div class="row justify-content-center, entry">
-    <div class="form-group, col-lg-10">   
-        <textarea class="form-control" id="add-to-do" value="Add Item" rows="6"></textarea>
-    </div>  
-    <div class="form-group, col-lg-2">     
-        <button type="submit" id="submit" class="btn btn-primary mb-2">Submit</button>
+            <div class="form-group, col-lg-10">
+                <textarea class="form-control" id="add-to-do" value="Add Item" rows="6"></textarea>
+            </div>
+            <div class="form-group, col-lg-2">
+                <button type="submit" id="submit" class="btn btn-primary mb-2">Submit</button>
+            </div>
+        </div>
+
+
+        <div class="row justify-content-center, ready">
+            <div id="entries" class="readytwo, col-lg-10"></div>
+
+            <div class="form-group, col-lg-2, readybuttons">
+
+
+            </div>
+        </div>
+
     </div>
-</div>
-
-
-<div class="row justify-content-center, ready">
-    <div id="entries" class="readytwo, col-lg-10"></div>
-
-    <div class="form-group, col-lg-2, readybuttons">  
-    <button id="btnDeleteEntry">Undo  *</button>
-    <button id="btnPublish">Publish</button>
-</div>
-</div>
-<div class="row col-lg-10 justify-content-center, publish">
-    <div id="publish"></div>
-</div>    
-</div>
 
 
 
@@ -73,15 +71,15 @@
         //voting time period
         //user rating
         //each word has to be typed (no copy pasting)
- 
-                var colors = [
-                    "brown",
-                    "blue",
-                    "magenta",
-                    "teal",
-                    "coral",
-                ];
-    
+
+        var colors = [
+            "brown",
+            "blue",
+            "magenta",
+            "teal",
+            "coral",
+        ];
+
         //submits written entry, connects with wordz
         $("#submit").on("click", function (event) {
             event.preventDefault();
@@ -102,12 +100,9 @@
         //publish story function
         $("#btnPublish").on("click", function () {
             //create a new div
-
             var newDiv = $("<div>");
             newDiv.append($(".wordz"));
-
             $("#publish").append(newDiv);
-
             //$("#publish").append($(".wordz"));
         });
     </script>
