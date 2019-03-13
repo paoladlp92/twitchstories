@@ -1,55 +1,51 @@
+// *********************************************************************************
+// Server.js - This file is the initial starting point for the Node/Express server.
+// *********************************************************************************
+
+
 // Dependencies
+// =============================================================
 var express = require("express");
-var exphbs = require("express-handlebars");
-// Create an instance of the express app.
+var mongoose = require("mongoose");
+var bodyParser = require('body-parser');
+var mongojs = require("mongojs");
+
+// Requiring the `User` model for accessing the `users` collection
+var Entry = require("./app/models/userModel.js");
+
+var databaseUrl = "userdb";
+var collections = ["entries"];
+var db = mongojs(databaseUrl, collections);
+
+
+
+// Sets up the Express App
+// =============================================================
 var app = express();
-// Set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var PORT = process.env.PORT || 8080;
-// Set Handlebars as the default templating engine.
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+var PORT = process.env.PORT || 3000;
 
-var mysql = require("mysql");
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/userdb", { useNewUrlParser: true });
+var jsonParser = bodyParser.json();
+app.use(jsonParser);
 
-var connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "byzorcabr9",
-    database: "movie_planner_db"
-  });
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  connection.connect(function(err) {
-    if (err) {
-      console.error("error connecting: " + err.stack);
-      return;
-    }
-  
-    console.log("connected as id " + connection.threadId);
-  });
-
-// Data
-var entries = [
-  { story: "Once upon a time" },
-  { story: "There was a magical dog." } //name
-];
+// Static directory to be served
+app.use(express.static("app/public"));
 
 // Routes
-app.get("/entries/:story", function(req, res) {
-  for (var i = 0; i < entries.length; i++) {
-    if (entries[i].story === req.params.story) {
-      return res.render("entries", entries[i]);
-    }
-  }
-});
+// =============================================================
+//require("app/routes/api-routes.js")(app);
 
-app.get("/entries", function(req, res) {
-  res.render("ics", { ics: entries });
-});
+// Here we introduce HTML routing to serve different HTML files
+require("./app/routes/html-routes")(app);
+//dependencies app entry db need to work
+require("./app/routes/api-routes")(app, Entry, db);
 
-// Start our server so that it can begin listening to client requests.
+// Starts the server to begin listening
+// =============================================================
 app.listen(PORT, function() {
-  // Log (server-side) when our server has started
-  console.log("Server listening on: http://localhost:" + PORT);
+  console.log("App listening on PORT " + PORT);
 });

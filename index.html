@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="300">
+  <title>Everyone's Story</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <style>
+    body {
+      display: inline;
+      color: #433E3F;
+      background: #F9ECE0;
+      max-width: 1920px;
+      margin: auto;
+      font-size: 21px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="/hello">hello</a></li>
+      <li class="breadcrumb-item"><a href="userstoriesabout.html">About</a></li>
+      <li class="breadcrumb-item active" aria-current="page"></li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center entry">
+
+    <form action="/submit" method="post" id="entryForm">
+      <input type="text" name="entry" placeholder="entry" id="txtEntry">
+      <input type="submit">
+    </form>
+
+
+    <div class="container">
+      <p>Story : <span id="entriesHere"></span></p>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+  var colors = [
+      "brown",
+      "blue",
+      "magenta",
+      "teal",
+      "coral",
+    ]; 
+  //Display lo que ya esta en las bases
+    $.ajax({
+        method: "GET",
+        //consigue base de datos works onluy with submit2?
+        url: "/submit2",
+        //en formato json
+        contentType: "application/json",
+        dataType: 'json',
+        //pone la info
+      }).then(function (response) {
+        console.log(response);
+        //document.getElementById("entriesHere").append(response.entry);
+        //'e' can be any name
+        //para cada cosa
+        response.forEach(e => {
+        var targetColorOfText = colors[Math.floor(Math.random() * colors.length)];
+        var entries = $("#entriesHere");
+        var wordz = $("<span>");
+          //referencia a bases de datos
+        wordz.text(e.entry + " ");
+        wordz.addClass(".wordz");
+        wordz.css('color', targetColorOfText);
+        entries.append(wordz);
+
+        //Si funciona, pero se queda loading para siempre, me tengo q salir de la web y uego regresar :( y darle refresh
+        //ayuda con la funcion post de abajo, pero aun no se refresh
+        
+        });
+ 
+      });
+      $("#entryForm").on("submit", function (event) {
+      event.preventDefault();
+      
+      const entry = $("#txtEntry").val();
+      const data = {
+        entry: entry
+      };
+      $.ajax({
+        method: "POST",
+        //submit2 weird
+        url: "/submit",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        dataType: 'json',
+      }).then(function (response) {
+        console.log(response);
+        //document.getElementById("entriesHere").append(response.entry);
+        var toDoCount = 0;
+        var targetColorOfText = colors[Math.floor(Math.random() * colors.length)];
+        var entries = $("#entriesHere");
+        var wordz = $("<span>");
+        wordz.text(entry + " ");
+        wordz.addClass(".wordz");
+        wordz.css('color', targetColorOfText);
+        entries.append(wordz);
+        //location.reload(true);  
+      });
+      return false;
+      //location.reload(false);
+    });
+
+    function refresh() {
+      $.ajax({
+        url: "",
+        dataType: "text",
+        success: function(html) {
+          $('#fu').replaceWith($.parseHTML(html));
+          setTimeout(refresh,2000);
+        }
+      });
+    }
+
+
+  </script>
+ 
+
+</body>
+
+</html>
